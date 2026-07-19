@@ -1,0 +1,16 @@
+# Vivado project build artifacts (không đưa lên git)
+*.jou
+*.log
+*.str
+*.wdb
+.Xil/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+*.srcs/
+*.xpr
+vivado*.backup.*
+__pycache__/
+*.pyc
