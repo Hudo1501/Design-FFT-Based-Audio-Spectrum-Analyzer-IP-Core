@@ -1,11 +1,3 @@
-// =============================================================================
-// Module : bit_reverse_reorder   (dao BIT-REVERSED -> TU NHIEN cho luong PHUC)
-// -----------------------------------------------------------------------------
-// Tuy chon (PDF liet ke 'bit_reverse_reorder.v'). Sap xep luong X[k] PHUC (re/im)
-// tu THU TU BIT-REVERSED ve THU TU TU NHIEN dung DOUBLE BUFFER (ping-pong), xuat
-// du N bin (hai bien) — khac bin_ram_output.v (chi magnitude, N/2 don bien).
-// Dung khi downstream can pho PHUC theo thu tu tu nhien. rst_n active-low.
-// =============================================================================
 `timescale 1ns / 1ps
 
 module bit_reverse_reorder #(

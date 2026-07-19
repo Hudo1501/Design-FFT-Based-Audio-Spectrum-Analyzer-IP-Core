@@ -1,19 +1,3 @@
-// =============================================================================
-// Module : complex_multiplier   (Karatsuba 3-multiplier, pipeline 3 tang)
-// -----------------------------------------------------------------------------
-// (ar+j*ai)*(br+j*bi) = pr + j*pi, Q1.15. Dung ky thuat 3 BO NHAN (Gauss/
-// Karatsuba) thay vi 4:
-//     k1 = br*(ar+ai) ; k2 = ar*(bi-br) ; k3 = ai*(br+bi)
-//     pr = k1 - k3    ; pi = k1 + k2
-// PIPELINE 3 TANG (latency = 3 chu ky):
-//   T1: tinh 3 tong s1=ar+ai, s2=bi-br, s3=br+bi (+ tre ar,ai,br)
-//   T2: 3 phep nhan k1,k2,k3
-//   T3: cong/tru + dua ve Q1.15 (dich 15, convergent rounding + saturate)
-//
-// Q1.15 x Q1.15 = Q2.30; dich phai 15 bit voi round-half-to-even + saturate.
-// BUG DA SUA: dung literal signed "1" cho phep +1 lam tron (KHONG 1'b1 -- la
-// unsigned 1-bit lam sai gia tri am).
-// =============================================================================
 `timescale 1ns / 1ps
 
 module complex_multiplier #(
@@ -21,7 +5,7 @@ module complex_multiplier #(
 )(
     input  wire                  clk,
     input  wire                  rst_n,
-    input  wire                  en,      // clock-enable (=valid) de chiu gap
+    input  wire                  en,      // clock-enable (=valid)
     input  wire signed [DW-1:0]  ar,
     input  wire signed [DW-1:0]  ai,
     input  wire signed [DW-1:0]  br,
@@ -31,7 +15,7 @@ module complex_multiplier #(
 );
     localparam integer SHIFT = DW - 1;    // 15
 
-    // ---- Tang 1: cac tong (17-bit) + tre toan hang can dung o tang 2 ----
+    // Tang 1: cac tong (17-bit) + tre toan hang can dung o tang 2 
     reg signed [DW:0]   s1, s2, s3;       // ar+ai, bi-br, br+bi
     reg signed [DW-1:0] br1, ar1, ai1;
     always @(posedge clk) begin
@@ -45,8 +29,8 @@ module complex_multiplier #(
         end
     end
 
-    // ---- Tang 2: 3 phep nhan (33-bit) ----
-    reg signed [2*DW:0] k1, k2, k3;       // 16b * 17b -> <=33-bit
+    // Tang 2: 3 phep nhan (33-bit)
+    reg signed [2*DW:0] k1, k2, k3;  
     always @(posedge clk) begin
         if (!rst_n) begin k1<=0; k2<=0; k3<=0; end
         else if (en) begin
@@ -56,7 +40,7 @@ module complex_multiplier #(
         end
     end
 
-    // ---- Tang 3: cong/tru (34-bit) + round-half-even + saturate ----
+    // Tang 3: cong/tru (34-bit) + round-half-even + saturate ----
     wire signed [2*DW+1:0] pr_full = $signed({k1[2*DW],k1}) - $signed({k3[2*DW],k3});
     wire signed [2*DW+1:0] pi_full = $signed({k1[2*DW],k1}) + $signed({k2[2*DW],k2});
 

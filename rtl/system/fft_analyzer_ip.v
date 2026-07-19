@@ -1,16 +1,4 @@
-// =============================================================================
-// Module : fft_analyzer_ip   (TOP IP — bien AXI4-Stream hai dau + control)
-// -----------------------------------------------------------------------------
-//   audio (AXI-S slave) -> axi_stream_slave_if -> project_top
-//        project_top.spec_* -> axi_stream_master_if -> spectrum (AXI-S master)
-//        project_top.peak_*  -> phoi ra ngoai
-//        fft_control_fsm: status (busy, frame_count) + core_en, tick = peak_valid
-//
-// LUU Y: luong pho tu project_top la SELF-TIMED (free-running, khong co ready
-// nguoc len). axi_stream_master_if co skid cho backpressure ngan; neu m_axis_tready
-// co the ha lau, hay chen FIFO giua project_top.spec_* va master_if. Downstream
-// nen giu m_axis_tready cao. rst_n active-low.
-// =============================================================================
+
 `timescale 1ns / 1ps
 
 module fft_analyzer_ip #(
@@ -25,17 +13,17 @@ module fft_analyzer_ip #(
     input  wire                          clk,
     input  wire                          rst_n,
     input  wire                          start,
-    // ---- AXI-S slave: audio in ----
+    // AXI-S slave: audio in
     input  wire                          s_axis_tvalid,
     input  wire signed [DATA_WIDTH-1:0]  s_axis_tdata,
     output wire                          s_axis_tready,
-    // ---- AXI-S master: pho don bien (tu nhien) ----
+    // AXI-S master: pho don bien (natural order)
     output wire                          m_axis_tvalid,
     output wire [DATA_WIDTH-1:0]         m_axis_tdata,     // magnitude UNSIGNED
-    output wire                          m_axis_tlast,     // = spec_last (het frame)
-    output wire [0:0]                    m_axis_tuser,     // = spec_sof (dau frame)
+    output wire                          m_axis_tlast,    
+    output wire [0:0]                    m_axis_tuser,     
     input  wire                          m_axis_tready,
-    // ---- dinh pho + trang thai ----
+    // Peak Spectrum + State
     output wire                          peak_valid,
     output wire [DATA_WIDTH-1:0]         peak_magnitude,
     output wire [$clog2(N/2)-1:0]        peak_bin_idx,
@@ -43,7 +31,7 @@ module fft_analyzer_ip #(
     output wire                          core_en,
     output wire [31:0]                   frame_count
 );
-    // ---- slave IF ----
+    // slave IF 
     wire                         iv, irdy;
     wire signed [DATA_WIDTH-1:0] idat;
     axi_stream_slave_if #(.DATA_WIDTH(DATA_WIDTH)) u_slv (
@@ -52,7 +40,7 @@ module fft_analyzer_ip #(
         .m_valid(iv), .m_data(idat), .m_ready(irdy)
     );
 
-    // ---- loi tich hop ----
+    // loi tich hop
     wire                    sv, ssof, slast;
     wire [DATA_WIDTH-1:0]   smag;
     wire [$clog2(N)-1:0]    sbin;
@@ -66,7 +54,7 @@ module fft_analyzer_ip #(
         .peak_valid(peak_valid), .peak_magnitude(peak_magnitude), .peak_bin_idx(peak_bin_idx)
     );
 
-    // ---- master IF (pho) ----
+    // master IF
     wire spec_ready_unused;
     axi_stream_master_if #(.DATA_WIDTH(DATA_WIDTH), .USER_WIDTH(1)) u_mst (
         .clk(clk), .rst_n(rst_n),
@@ -75,7 +63,7 @@ module fft_analyzer_ip #(
         .m_axis_tlast(m_axis_tlast), .m_axis_tuser(m_axis_tuser), .m_axis_tready(m_axis_tready)
     );
 
-    // ---- control/status ----
+    // control/status
     fft_control_fsm #(.CNT_WIDTH(32)) u_ctrl (
         .clk(clk), .rst_n(rst_n), .start(start), .frame_tick(peak_valid),
         .core_en(core_en), .busy(busy), .frame_done(), .frame_count(frame_count)

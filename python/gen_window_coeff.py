@@ -1,16 +1,3 @@
-#!/usr/bin/env python3
-# =============================================================================
-# gen_window_coeff.py
-# -----------------------------------------------------------------------------
-# Sinh he so cua so Hann w[n] = 0.5*(1-cos(2*pi*n/N)), n = 0..N-1, dinh dang
-# Q1.15 16-bit signed, xuat ra window_coeff.mem de nap vao window_rom.v bang
-# $readmemh. Cong thuc khop voi ham hann_window() trong golden_model_fft.py.
-#
-# Cach dung:
-#     python3 gen_window_coeff.py --n 256 --out ./rom_out
-#     python3 gen_window_coeff.py --n 256 --type hamming --out ./rom_out
-# =============================================================================
-
 import argparse
 import os
 
@@ -74,9 +61,6 @@ def main():
     os.makedirs(args.out, exist_ok=True)
     w_float = WINDOW_FUNCS[args.type](args.n)
 
-    # Tru epsilon nho de dinh cua so (=1.0 tai mot so diem, vd giua Hamming/
-    # Blackman) khong vua cham tran Q1.15 (gia tri max bieu dien duoc la
-    # 32767/32768 = 0.999969...), giong cach lam trong golden_model_fft.py
     w_float_safe = np.clip(w_float, None, 0.999969482421875)
     w_q15 = to_q15(w_float_safe)
 

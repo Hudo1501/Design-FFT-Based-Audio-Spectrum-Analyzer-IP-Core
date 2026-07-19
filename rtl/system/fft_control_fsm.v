@@ -1,15 +1,3 @@
-// =============================================================================
-// Module : fft_control_fsm   (dieu khien & trang thai TONG)
-// -----------------------------------------------------------------------------
-// Datapath la SELF-TIMED (moi tang co bo dem rieng reset boi sof), nen khoi nay
-// KHONG dieu khien tung tang ma dong vai tro CONTROL/STATUS tong:
-//   - IDLE -> RUN khi 'start'; RUN -> IDLE khi '~start'.
-//   - core_en: cho phep pipeline chay (co the noi toi 'en'/soft-reset neu muon).
-//   - dem so frame da hoan tat (frame_tick = 1 xung/ frame, vd noi toi peak_valid
-//     hoac spec_last), phat frame_done + frame_count.
-//   - busy: dang xu ly.
-// rst_n active-low.
-// =============================================================================
 `timescale 1ns / 1ps
 
 module fft_control_fsm #(
@@ -17,11 +5,11 @@ module fft_control_fsm #(
 )(
     input  wire                    clk,
     input  wire                    rst_n,
-    input  wire                    start,        // muc: chay khi cao
-    input  wire                    frame_tick,   // 1 xung khi 1 frame ra xong
-    output reg                     core_en,      // cho phep loi chay
+    input  wire                    start,        
+    input  wire                    frame_tick,   
+    output reg                     core_en,      
     output reg                     busy,
-    output reg                     frame_done,   // 1 xung / frame
+    output reg                     frame_done, 
     output reg  [CNT_WIDTH-1:0]    frame_count
 );
     localparam IDLE = 1'b0, RUN = 1'b1;
@@ -32,7 +20,7 @@ module fft_control_fsm #(
             state<=IDLE; core_en<=1'b0; busy<=1'b0;
             frame_done<=1'b0; frame_count<={CNT_WIDTH{1'b0}};
         end else begin
-            frame_done <= 1'b0;                      // mac dinh 0 (xung 1 chu ky)
+            frame_done <= 1'b0;                     
             case (state)
                 IDLE: begin
                     core_en <= 1'b0; busy <= 1'b0;

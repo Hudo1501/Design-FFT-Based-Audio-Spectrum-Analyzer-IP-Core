@@ -1,31 +1,3 @@
-// =============================================================================
-// Module : butterfly_r2_stage   (radix-2 DIF SDF "delay commutator")
-// -----------------------------------------------------------------------------
-// 1 tang butterfly SDF co DELAY LINE ben trong (DELAY_LEN = N/2^(J+1)). Dung
-// chung cho 8 tang. Xuat them sel_o/cnt_o de stage_with_twiddle.v dia chi hoa
-// twiddle.
-//
-// PHA (theo vi tri mau trong frame p = cnt_cur, reset boi in_sof):
-//   sel = p[LOG2N-1-J]:
-//     sel=0 (LOAD/passthrough): out = delay_out (chinh la 'diff' tre tu khoi
-//                               truoc, se duoc NHAN twiddle o tren); day input
-//                               vao delay line.
-//     sel=1 (COMPUTE/butterfly): out = (delay_out + in)   [scaled ÷2 neu
-//                               SCALE_EN]; day (delay_out - in) [÷2] vao delay.
-//   cnt_o = vi tri trong nua khoi (p mod DELAY_LEN) -> lam co so dia chi twiddle.
-//
-// *** BUG DA SUA (muc 5 tai lieu tien do) ***
-// sel_o/cnt_o duoc DANG KY (thanh ghi) de canh DUNG CHU KY voi out_re/out_im.
-// out_re/out_im la ket qua tinh tu sel/cnt cua mau HIEN TAI roi qua 1 thanh ghi;
-// neu de sel_o/cnt_o = wire noi thang toi thanh ghi cnt/sel (da advance cho mau
-// KE TIEP) thi nhan (sel_o) se di truoc du lieu (out) 1 chu ky -> stream doi pha
-// sum<->diff cham 1 chu ky, sai le W_N^1. Dang ky sel_o/cnt_o bang chinh gia tri
-// sel/cnt dung de tinh out => nhan & du lieu ra CUNG chu ky. (Logic cnt/sel noi
-// bo GIU NGUYEN — da kiem chung FFT-4.)
-//
-// Latency tang nay = 1 chu ky. Da kiem chung mo phong cycle-accurate: 8 tang +
-// twiddle -> SQNR ~60 dB, output bit-reversed.
-// =============================================================================
 `timescale 1ns / 1ps
 
 module butterfly_r2_stage #(

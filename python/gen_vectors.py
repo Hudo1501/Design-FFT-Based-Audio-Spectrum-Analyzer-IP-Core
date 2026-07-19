@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# Sinh vector vang cho tb_fft_r22sdf.v: input frame + FFT output natural-order
-# (re/im) + magnitude single-sided + peak bin. Dung golden_model_fft.py.
 import os, numpy as np
 from golden_model_fft import (N, FRAC, to_q15, fft_core_frame, bitrev)
 

@@ -1,14 +1,3 @@
-#!/usr/bin/env python3
-# =============================================================================
-# gen_twiddle_rom.py
-# -----------------------------------------------------------------------------
-# Sinh N/2 he so twiddle W_N^k = exp(-2*pi*j*k/N), k=0..N/2-1, Q1.15 16-bit
-# signed, xuat 2 FILE RIENG: twiddle_re.mem va twiddle_im.mem (moi dong 4 hex
-# digit, 16-bit), nap vao twiddle_rom.v (doc dong bo) bang $readmemh.
-# Khop ham twiddle_q15() trong golden_model_fft.py.
-#
-#   python3 gen_twiddle_rom.py --n 256 --out ./rom_out
-# =============================================================================
 import argparse, os
 import numpy as np
 

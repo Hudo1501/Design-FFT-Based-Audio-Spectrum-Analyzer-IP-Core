@@ -1,12 +1,3 @@
-// =============================================================================
-// Module : bin_ram_output
-// -----------------------------------------------------------------------------
-// Sap xep pho tu THU TU BIT-REVERSED (loi FFT R2SDF xuat ra, qua magnitude_unit)
-// ve THU TU TU NHIEN va xuat N/2 bin don bien (0..N/2-1). DOUBLE BUFFER ping-pong.
-// Anh xa: mau den thu 'a' (arrival, 0..N-1 tu suy ra tu in_sof/in_last) mang bin
-// tu nhien nb = bit_reverse(a). Ghi vao dia chi nb; doc 0..N/2-1 => pho tu nhien.
-// Vao: magnitude UNSIGNED (bit-reversed). Ra: magnitude UNSIGNED (tu nhien)+idx+sof/last.
-// =============================================================================
 `timescale 1ns / 1ps
 
 module bin_ram_output #(

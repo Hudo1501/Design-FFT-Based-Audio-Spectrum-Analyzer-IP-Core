@@ -1,24 +1,3 @@
-// =============================================================================
-// Module : fft_r22sdf_top   (FFT N=256, R2SDF pipelined DIF)
-// -----------------------------------------------------------------------------
-// Noi tiep log2(N)=8 tang stage_with_twiddle. Tang 0..6 co bo nhan twiddle
-// (HAS_TWIDDLE=1); tang cuoi (J=7, twiddle luon =1) HAS_TWIDDLE=0 (khong nhan)
-// -> tong 7 bo nhan (dung kien truc R2SDF da chot, muc 5 tai lieu tien do).
-// DELAY_LEN tang j = N>>(j+1) = 128,64,...,1. SCALE_EN=1 moi tang (chia 2/tang
-// => tong 1/N, chong tran).
-//
-// Input: luong mau natural-order 1 mau/chu ky (tu window_unit.v).
-// Output: X[k] so phuc, THU TU BIT-REVERSED.
-//
-// FRAMING: bit-reversed[0] xuat hien sau LATENCY chu ky ke tu mau dau frame vao.
-// DA DO bang mo phong cycle-accurate (kien truc day du: butterfly 1cyc +
-// twiddle/bypass 4cyc moi tang co nhan, tang cuoi 1cyc): **LATENCY = 283** voi
-// N=256 (hang so moi frame). out_sof = in_sof tre 283; out_last = bin N-1.
-// >>> Testbench tu-canh-khung se in LATENCY thuc do; neu khac 283 (vd doi so
-//     tang pipeline cua complex_multiplier), chinh tham so LATENCY cho khop. <<<
-//
-// Da kiem chung: SQNR ~60 dB so voi numpy.fft; phat hien dinh don/da-tone dung.
-// =============================================================================
 `timescale 1ns / 1ps
 
 module fft_r22sdf_top #(
@@ -32,15 +11,15 @@ module fft_r22sdf_top #(
     input  wire                          rst_n,
     input  wire                          in_valid,
     input  wire signed [DATA_WIDTH-1:0]  in_re,
-    input  wire signed [DATA_WIDTH-1:0]  in_im,     // thuong = 0
+    input  wire signed [DATA_WIDTH-1:0]  in_im,     
     input  wire                          in_sof,
-    input  wire                          in_last,   // (khong bat buoc)
+    input  wire                          in_last,  
 
     output wire                          out_valid,
     output wire signed [DATA_WIDTH-1:0]  out_re,
     output wire signed [DATA_WIDTH-1:0]  out_im,
-    output wire                          out_sof,   // moc bit-reversed[0]
-    output wire                          out_last   // moc bit-reversed[N-1]
+    output wire                          out_sof,   
+    output wire                          out_last   
 );
     localparam integer LOG2N = $clog2(N);
 
@@ -70,9 +49,6 @@ module fft_r22sdf_top #(
     assign out_re = st_re[LOG2N-1];
     assign out_im = st_im[LOG2N-1];
 
-    // framing: tre in_sof/in_valid di LATENCY MAU-VALID (dich chi khi in_valid)
-    // => dem theo mau-valid, khop datapath da valid-gated (chiu duoc GAP). Nho
-    // vay out_sof/out_valid canh dung voi mau ra that va bo qua 283 mau warmup.
     reg [LATENCY-1:0] sof_dl, val_dl;
     always @(posedge clk) begin
         if (!rst_n) begin sof_dl <= {LATENCY{1'b0}}; val_dl <= {LATENCY{1'b0}}; end

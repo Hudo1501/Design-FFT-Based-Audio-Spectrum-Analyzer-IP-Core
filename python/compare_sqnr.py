@@ -1,17 +1,3 @@
-#!/usr/bin/env python3
-# =============================================================================
-# compare_sqnr.py   (TV6)
-# -----------------------------------------------------------------------------
-# Cong cu doi chieu ket qua RTL voi golden model + tinh SQNR, phat hien bin dinh.
-# 2 che do:
-#   (a) --self         : chi chay golden model, bao SQNR golden vs numpy.fft.
-#   (b) --rtl DUMP.mem : nap dump output RTL (bit-reversed, moi dong "re_hex im_hex"
-#                        hoac 32-bit {re,im}), TU CANH KHUNG voi golden, tinh SQNR
-#                        RTL-vs-golden va RTL-vs-numpy, in bin dinh.
-#
-#   python3 compare_sqnr.py --self
-#   python3 compare_sqnr.py --rtl rtl_out.mem --input rom_out/tv_input.mem
-# =============================================================================
 import argparse
 import numpy as np
 from golden_model_fft import (N, FRAC, STAGES, to_q15, fft_core_frame, bitrev)

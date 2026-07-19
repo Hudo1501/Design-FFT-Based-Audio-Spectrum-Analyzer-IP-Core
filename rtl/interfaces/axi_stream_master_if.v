@@ -1,12 +1,3 @@
-// =============================================================================
-// Module : axi_stream_master_if   (giao dien AXI4-Stream MASTER — skid buffer)
-// -----------------------------------------------------------------------------
-// Lop bien AXI4-Stream phia RA cua IP: nhan luong pho da dong khung (in_valid/
-// in_data/in_sof/in_last + in_ready) va xuat beat AXI-S master:
-//   m_axis_tvalid/tdata/tready, tlast = in_last (het frame),
-//   tuser[0] = in_sof (dau frame). SKID BUFFER 1 muc cho backpressure (tready).
-// rst_n active-low.
-// =============================================================================
 `timescale 1ns / 1ps
 
 module axi_stream_master_if #(
@@ -49,7 +40,7 @@ module axi_stream_master_if #(
                     data_r<=data_skid; last_r<=last_skid; user_r<=user_skid;
                     valid_r<=1'b1; skid_valid<=1'b0;
                 end else begin
-                    data_r<=in_data; last_r<=in_last; user_r<=in_sof;    // tu dong zero-extend len USER_WIDTH
+                    data_r<=in_data; last_r<=in_last; user_r<=in_sof; 
                     valid_r<=in_valid;
                 end
             end else if (in_valid && in_ready) begin

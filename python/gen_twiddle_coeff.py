@@ -1,14 +1,3 @@
-#!/usr/bin/env python3
-# =============================================================================
-# gen_twiddle_coeff.py
-# -----------------------------------------------------------------------------
-# Sinh he so twiddle W_N^k = exp(-2*pi*j*k/N), k=0..N-1, dinh dang Q1.15 16-bit
-# signed, dong goi 32-bit MOI DONG: {real[15:0], imag[15:0]} (real la 16 bit
-# CAO), xuat twiddle_coeff.mem de nap vao twiddle_rom.v bang $readmemh.
-# Khop dung ham twiddle_q15() trong golden_model_fft.py.
-#
-#   python3 gen_twiddle_coeff.py --n 256 --out ./rom_out
-# =============================================================================
 import argparse, os
 import numpy as np
 
