@@ -169,10 +169,6 @@ W⁰ = 1, leaving **seven** general complex multipliers.
 
 ![FFT core stages](docs/images/fft_core_stages.png)
 
-> ⚠️ **This diagram is out of date in one place.** The *Latency balance* block is labelled
-> `283 valid samples`. The correct, verified value is **291**. 283 was the original
-> analytically-derived figure; it omits the butterfly output register of each of the eight
-> stages. All RTL in this repository uses 291. Regenerate this figure before reuse.
 
 ### Inside one stage
 
