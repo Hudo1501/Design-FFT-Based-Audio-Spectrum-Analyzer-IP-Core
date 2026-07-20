@@ -31,11 +31,8 @@ Target board: **Digilent PYNQ-Z2** (Zynq XC7Z020CLG400-1). Synthesized, implemen
 - [PPA Results](#ppa-results)
 - [Board Bring-Up](#board-bring-up)
 - [Engineering Findings](#engineering-findings)
-- [Known Limitations](#known-limitations)
-- [Roadmap](#roadmap)
 - [Paper and Citation](#paper-and-citation)
 - [Authors](#authors)
-- [License](#license)
 
 ---
 
@@ -44,7 +41,7 @@ Target board: **Digilent PYNQ-Z2** (Zynq XC7Z020CLG400-1). Synthesized, implemen
 This core computes a 256-point FFT of a streaming audio signal and reduces each transform to a
 128-bin single-sided magnitude spectrum plus a per-frame spectral peak. It targets embedded
 spectral front ends — keyword spotting, acoustic event detection, machine condition
-monitoring, instrumentation — on devices where the FFT is not instantiated from a vendor
+monitoring, instrumentation — on devices where the FFT is not instantiated by a vendor
 library but is itself the object of study.
 
 The architecture is deliberately conventional: Cooley–Tukey decimation-in-frequency, an SDF
