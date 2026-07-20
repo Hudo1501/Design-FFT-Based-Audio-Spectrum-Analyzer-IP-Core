@@ -99,7 +99,7 @@ via `peak_detector` (`Peak fsm output`).
 Wizard, clock-domain crossing, and an internal self-test source — the PYNQ-Z2 has no onboard
 PDM microphone.
 
-![Top module diagram](docs/images/top_module_diagram.png)
+![Top module diagram](docs/images/top_module.png)
 
 - **`tone_player`** replays `tv_input.mem` — the same golden test vector used in simulation,
   whose spectral peak sits at **bin 10** (1875 Hz) — as an internal stimulus. This confirms
