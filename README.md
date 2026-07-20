@@ -158,7 +158,3 @@ AXI4-Stream slave (audio in) và master (spectrum out) đều có `tvalid/tready
 qua skid buffer. Output phổ đơn biên, thứ tự tự nhiên, `tuser[0]` = start-of-frame,
 `tlast` = bin cuối (N/2−1).
 
----
-
-*Repo được tổ chức lại và tài liệu hoá bởi thành viên nhóm với sự hỗ trợ của Claude
-(Anthropic).*
