@@ -493,48 +493,6 @@ tolerates an arbitrarily sparse source.
 `[Synth 8-373] invalid index for scalar`. Run more than one tool over the source.
 
 ---
-
-## Known Limitations
-
-Stated explicitly, because the numbers above are only usable if their boundaries are.
-
-- **No power figure is reported.** An earlier vectorless estimate of 0.259 W exists but is low
-  confidence and has been deliberately excluded; no switching-activity-based or board-level
-  measurement has been made. Energy-per-transform is likewise omitted, since a vectorless
-  estimate divided by a throughput the design never runs at would be a fabricated number.
-- **Timing does not close at 100 MHz.** The shipping build runs at 49.98 MHz. The
-  `magnitude_unit` critical path is the bottleneck; a bit-exact pipelined replacement exists
-  but has not been re-characterised.
-- **No implemented baseline comparison.** The R2SDF-vs-R2²SDF cost argument is analytic. No
-  R2²SDF version has been built and measured on the same device with the same flow.
-- **Silicon validation is partial.** The LED acceptance test confirms the peak bin on hardware;
-  the full 128-bin spectrum has not been read back and compared against the model on-chip.
-- **No burst flush.** `out_valid` asserts only while `in_valid` does, so when the source stops,
-  the final 291 samples remain resident in the pipeline. This is documented behaviour rather
-  than a defect — the testbench evaluates a frame from a continuous stream — but a burst-mode
-  host would need a flush mechanism.
-- **No live audio input on this board.** The PYNQ-Z2 lacks a PDM microphone; all results use
-  the internal `tone_player` stimulus.
-- **Architectural novelty is low.** Every building block is textbook. This repository is a
-  design-and-verification case study, not a novel architecture proposal.
-
----
-
-## Roadmap
-
-- [ ] Pipeline `magnitude_unit` and re-characterise F<sub>max</sub> above 100 MHz
-- [ ] Vector-based power measurement with realistic audio switching activity
-- [ ] Build an R2²SDF variant (`log4 N − 1 = 3` multipliers instead of 7) and compare PPA on
-      the same device and flow — a 12-DSP saving at identical memory and throughput
-- [ ] Real-input factorisation to halve the arithmetic again
-- [ ] Read the full 128-bin spectrum back over AXI and compare against the model on silicon
-- [ ] Integrate a PDM front end on a board with a microphone
-- [ ] Regenerate `docs/images/fft_core_stages.png` with `FFT_LATENCY = 291`
-- [ ] Re-export `docs/images/top_module_diagram.png` with English labels
-
----
-
-
 ---
 
 ## Authors
