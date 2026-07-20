@@ -45,8 +45,7 @@ library but is itself the object of study.
 
 The architecture is deliberately conventional: Cooley–Tukey decimation-in-frequency, an SDF
 pipeline, Q1.15 fixed-point arithmetic with per-stage scaling, a three-multiply complex
-product, a Hann window, and an α-max-β-min magnitude estimator. **No claim of architectural
-novelty is made.** What this repository offers instead is a fully open RTL description paired
+product, a Hann window, and an α-max-β-min magnitude estimator. What this repository offers instead is a fully open RTL description paired
 with the bit-accurate Python model that both *generates its coefficient memories* and *serves
 as its verification oracle*, a bottom-up bit-exact verification result at every level of the
 hierarchy, and a post-place-and-route PPA characterization that separates measured numbers
