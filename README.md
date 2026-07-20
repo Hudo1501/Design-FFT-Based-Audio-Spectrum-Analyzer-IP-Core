@@ -30,7 +30,6 @@ Target board: **Digilent PYNQ-Z2** (Zynq XC7Z020CLG400-1). Synthesized, implemen
 - [Verification: RTL vs. Python Golden Model](#verification-rtl-vs-python-golden-model)
 - [PPA Results](#ppa-results)
 - [Board Bring-Up](#board-bring-up)
-- [Engineering Findings](#engineering-findings)
 - [Paper and Citation](#paper-and-citation)
 - [Authors](#authors)
 
@@ -53,12 +52,6 @@ as its verification oracle*, a bottom-up bit-exact verification result at every 
 hierarchy, and a post-place-and-route PPA characterization that separates measured numbers
 from derived ones.
 
-**Highlight.** During development we isolated an error class that value-level golden models
-are structurally unable to detect: an eight-sample *framing* error that leaves every
-arithmetic block provably bit-exact while corrupting every reported bin (peak bin 122 instead
-of 10). See [Engineering Findings](#engineering-findings) — this is the most transferable
-result in the project.
-
 ---
 
 ## Results at a Glance
@@ -79,9 +72,6 @@ result in the project.
 | Real-time margin | ≈ **1040×** over the 48 kS/s requirement | Derived |
 | Core latency | **291 valid samples**, constant every frame | Measured + analytically decomposed |
 
-> **Read the basis column.** Numbers marked *derived* are computed from measured ones, not
-> observed directly. No power measurement is reported here — see
-> [Known Limitations](#known-limitations).
 
 ---
 
@@ -100,10 +90,6 @@ via `peak_detector` (`Peak fsm output`).
   real-valued).
 - Output framing follows a `sof` / `valid` / `last` protocol that self-labels each sample's
   position within the frame; no explicit address bus is used.
-
-Framing signals are **propagated through delay lines matched to the datapath latency** rather
-than regenerated downstream. That choice is what makes the latency constant safety-critical —
-see [Engineering Findings](#engineering-findings).
 
 ---
 
@@ -178,9 +164,6 @@ three-multiply complex multiplier, and a bypass path for the sum stream. The two
 
 ![R2SDF stage internals](docs/images/r2sdf_stage.png)
 
-The commutator select and sample counter (`sel_o` / `cnt_o`) are **registered alongside the
-data**, not tapped from the live counter state. A one-cycle skew here rotates the entire
-spectrum by a fixed twiddle factor — see [Engineering Findings](#engineering-findings).
 
 If the complex multiplier pipeline depth changes from 3 to *P*, the bypass path must become
 `1 + P` **and** the top-level `FFT_LATENCY` parameter must be recomputed.
@@ -204,10 +187,6 @@ If the complex multiplier pipeline depth changes from 3 to *P*, the bypass path 
 | `axi_stream_slave_if` / `axi_stream_master_if` | IP boundary | Skid buffer, honours `tready` / `tvalid` backpressure |
 | `fft_control_fsm` | Control | `start` / `busy` / `core_en` / `frame_count` |
 
-> **Note on multiplier latency.** The complex multiplier itself is 3 valid samples. The
-> *twiddle branch* is 4 = ROM (1) + multiplier (3). Earlier documentation conflated the two;
-> the latency decomposition in [Engineering Findings](#engineering-findings) uses the split
-> figures.
 
 ---
 
@@ -383,12 +362,6 @@ Both are valid measurements of different things. Quote the full-build numbers fo
 costs on this board" and the out-of-context numbers for "what the IP costs standalone" — and
 say which is which.
 </details>
-
-**Throughput.** The architecture accepts one sample per enabled clock cycle. At 49.98 MHz that
-is ~50 MS/s, or roughly 195 000 transforms per second. The application needs 48 kS/s, so the
-real-time margin is about **1040×**. This is the most consequential number in this section,
-because it says every decision optimised for throughput bought headroom the application does
-not need. See [Roadmap](#roadmap).
 
 ---
 
